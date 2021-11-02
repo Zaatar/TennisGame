@@ -1,6 +1,7 @@
 #include <SDL.h>
 #include <GL/glew.h>
 #include <iostream>
+#include <GL/GLU.h>
 
 using std::cout;
 using std::endl;
@@ -48,7 +49,7 @@ int main(int argc = 0, char **argv = nullptr)
 
     //Set viewport and clear color
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glClearColor(0.0, 0.0, 1.0, 1.0);
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
     bool isRunning = true;
     while (isRunning)
@@ -70,9 +71,13 @@ int main(int argc = 0, char **argv = nullptr)
     //Draw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen
     SDL_GL_SwapWindow(window);                          //Swapbuffer
-    glClearColor(0.0, 0.0, 1.0, 1.0);
+    GLUquadricObj *quadric = NULL;
+    quadric = gluNewQuadric();
+    gluQuadricDrawStyle(quadric, GLU_FILL);
+    gluSphere(quadric, 0.1f, 15, 15);
 
     //Quit
+    gluDeleteQuadric(quadric);
     SDL_DestroyWindow(window);
     SDL_GL_DeleteContext(context);
 

@@ -7,7 +7,7 @@ EXT_DIR := ../external
 SRC_FILES := $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 
-LIBRARIES := -lSDL2main -lSDL2 -lSDL2_image -lglew32 -lzlib1 -lopengl32
+LIBRARIES := -lSDL2main -lSDL2 -lSDL2_image -lglew32 -lzlib1 -lopengl32 -lglu32
 
 INCLUDE :=-I$(EXT_DIR)\SDL2-2.0.12\include \
 		-I$(EXT_DIR)\SDL2_image-2.0.5\include \
