@@ -11,6 +11,12 @@ constexpr int SCREEN_HEIGHT = 480;
 
 int main(int argc = 0, char **argv = nullptr)
 {
+    GLfloat points[] = {
+        0.1f, 0.1f, 0.0f,
+        0.9f, 0.1f, 0.0f,
+        0.9f, 0.9f, 0.0f,
+        0.1f, 0.9f, 0.0f};
+
     //Handle args
     if (argc > 0)
     {
@@ -37,6 +43,45 @@ int main(int argc = 0, char **argv = nullptr)
     glewExperimental = GL_TRUE;
     glewInit();
 
+    GLuint vao = 0;
+    GLuint vbo = 0;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glEnableVertexAttribArray(0);
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    const char *vertexShader =
+        "#version 430\n"
+        "in vec3 vertexPosition;"
+        "void main() {"
+        "   gl_Position = vec4(vertexPosition, 1.0);"
+        "}";
+
+    const char *fragmentShader =
+        "#version 430\n"
+        "out vec4 fragmentColor;"
+        "void main() {"
+        "   fragmentColor = vec4(1.0f,1.0f,1.0f,1.0f);"
+        "}";
+
+    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &vertexShader, NULL);
+    glCompileShader(vs);
+    cout << "Vertex Shader created!" << endl;
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fs, 1, &fragmentShader, NULL);
+    glCompileShader(fs);
+    cout << "Fragment Shader created!" << endl;
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vs);
+    glAttachShader(shaderProgram, fs);
+    glLinkProgram(shaderProgram);
+    cout << "Shader program created!" << endl;
+
     //Get info
     const GLubyte *renderer = glGetString(GL_RENDERER);
     const GLubyte *version = glGetString(GL_VERSION);
@@ -49,35 +94,28 @@ int main(int argc = 0, char **argv = nullptr)
 
     //Set viewport and clear color
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-
-    bool isRunning = true;
-    while (isRunning)
-    {
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                isRunning = false;
-                break;
-            default:
-                break;
-            }
-        }
-    }
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     //Draw
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen
-    SDL_GL_SwapWindow(window);                          //Swapbuffer
-    GLUquadricObj *quadric = NULL;
+
+    cout << "Prior to using shader program" << endl;
+    glUseProgram(shaderProgram);
+    cout << "After using shader program" << endl;
+    glBindVertexArray(vao);
+    cout << "After binding vertex array" << endl;
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
+
+    /*GLUquadricObj *quadric = NULL;
     quadric = gluNewQuadric();
     gluQuadricDrawStyle(quadric, GLU_FILL);
-    gluSphere(quadric, 0.1f, 15, 15);
+    gluSphere(quadric, 0.15f, 15, 15);
+    */
+    SDL_GL_SwapWindow(window); //Swapbuffer
 
     //Quit
-    gluDeleteQuadric(quadric);
+    SDL_Delay(5000);
+    //gluDeleteQuadric(quadric);
     SDL_DestroyWindow(window);
     SDL_GL_DeleteContext(context);
 
