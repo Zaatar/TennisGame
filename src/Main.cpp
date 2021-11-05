@@ -3,19 +3,51 @@
 #include <iostream>
 #include <GL/GLU.h>
 
+#include "Timer.h"
+
 using std::cout;
 using std::endl;
 
 constexpr int SCREEN_WIDTH = 640;
 constexpr int SCREEN_HEIGHT = 480;
 
+void generateTranslationMatrix(float dt, float lastPositionX, float lastPositionY,
+                               float speedX, float speedY, float translationMatrix[16])
+{
+    translationMatrix[12] = speedX * dt + lastPositionX;
+    lastPositionX = translationMatrix[12];
+    cout << "X Translation Matrix Updated" << endl;
+    cout << "Speed : " << speedX << ", lastPosition : " << lastPositionX << endl;
+    translationMatrix[13] = speedY * dt + lastPositionY;
+    lastPositionY = translationMatrix[13];
+    cout << "Y Translation Matrix Updated" << endl;
+    cout << "Speed : " << speedX << ", lastPosition : " << lastPositionX << endl;
+}
+
 int main(int argc = 0, char **argv = nullptr)
 {
     GLfloat points[] = {
-        0.1f, 0.1f, 0.0f,
-        0.9f, 0.1f, 0.0f,
-        0.9f, 0.9f, 0.0f,
-        0.1f, 0.9f, 0.0f};
+        -0.5, -0.5f, 0.0f,
+        -0.5f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f};
+
+    float quarterScaleMatrix[16] = {
+        0.25f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.25f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.25f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f};
+
+    float translationMatrix[16] = {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f};
+
+    float lastPositionX = 0.5f;
+    float lastPositionY = 0.5f;
+    float speedX = 1.0f;
+    float speedY = 1.0f;
 
     //Handle args
     if (argc > 0)
@@ -57,8 +89,10 @@ int main(int argc = 0, char **argv = nullptr)
     const char *vertexShader =
         "#version 430\n"
         "in vec3 vertexPosition;"
+        "uniform mat4 scaleMatrix;"
+        "uniform mat4 translationMatrix;"
         "void main() {"
-        "   gl_Position = vec4(vertexPosition, 1.0);"
+        "   gl_Position = translationMatrix * scaleMatrix * vec4(vertexPosition, 1.0);"
         "}";
 
     const char *fragmentShader =
@@ -72,10 +106,12 @@ int main(int argc = 0, char **argv = nullptr)
     glShaderSource(vs, 1, &vertexShader, NULL);
     glCompileShader(vs);
     cout << "Vertex Shader created!" << endl;
+
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fs, 1, &fragmentShader, NULL);
     glCompileShader(fs);
     cout << "Fragment Shader created!" << endl;
+
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vs);
     glAttachShader(shaderProgram, fs);
@@ -92,30 +128,59 @@ int main(int argc = 0, char **argv = nullptr)
     glEnable(GL_DEPTH_TEST); //enable depth testing
     glDepthFunc(GL_LESS);    // depth-testing interprets a smaller value as "closer"
 
+    Timer timer;
+    float dt;
+
     //Set viewport and clear color
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    //Draw
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen
+    bool isRunning = true;
+    while (isRunning)
+    {
+        dt = static_cast<float>(timer.computeDeltaTime()) / 1000.0f;
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+            default:
+                break;
+            }
+        }
 
-    cout << "Prior to using shader program" << endl;
-    glUseProgram(shaderProgram);
-    cout << "After using shader program" << endl;
-    glBindVertexArray(vao);
-    cout << "After binding vertex array" << endl;
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 3);
+        //Update
+        if (abs(lastPositionX) > 1.0f)
+        {
+            speedX = -speedX;
+        }
+        if (abs(lastPositionY) > 1.0f)
+        {
+            speedY = -speedY;
+        }
 
-    /*GLUquadricObj *quadric = NULL;
-    quadric = gluNewQuadric();
-    gluQuadricDrawStyle(quadric, GLU_FILL);
-    gluSphere(quadric, 0.15f, 15, 15);
-    */
-    SDL_GL_SwapWindow(window); //Swapbuffer
+        translationMatrix[12] = speedX * dt + lastPositionX;
+        lastPositionX = translationMatrix[12];
+        translationMatrix[13] = speedY * dt + lastPositionY;
+        lastPositionY = translationMatrix[13];
+        //generateTranslationMatrix(dt, lastPositionX, lastPositionY, speedX, speedY, translationMatrix);
+        //Draw
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen
+
+        glUseProgram(shaderProgram);
+        int scaleMatrixLocation = glGetUniformLocation(shaderProgram, "scaleMatrix");
+        int translationMatrixLocation = glGetUniformLocation(shaderProgram, "translationMatrix");
+        glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, quarterScaleMatrix);
+        glUniformMatrix4fv(translationMatrixLocation, 1, GL_FALSE, translationMatrix);
+        glDrawArrays(GL_POLYGON, 0, 4);
+
+        SDL_GL_SwapWindow(window); //Swapbuffer
+    }
 
     //Quit
-    SDL_Delay(5000);
-    //gluDeleteQuadric(quadric);
     SDL_DestroyWindow(window);
     SDL_GL_DeleteContext(context);
 
