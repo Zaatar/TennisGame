@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <GL/glew.h>
 #include "Shader.h"
+#include "Square.h"
 
 class Game
 {
@@ -28,30 +29,9 @@ public:
 private:
     bool isRunning;
     int windowWidth, windowHeight;
-    GLuint vao;
-    GLuint vbo;
-    GLfloat points[16] = {
-        -0.5, -0.5f, 0.0f,
-        -0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f};
 
-    float quarterScaleMatrix[16] = {
-        0.25f, 0.0f, 0.0f, 0.0f,
-        0.0f, 0.25f, 0.0f, 0.0f,
-        0.0f, 0.0f, 0.25f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f};
-
-    float translationMatrix[16] = {
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 1.0f};
-
-    float lastPositionX = 0.5f;
-    float lastPositionY = 0.5f;
-    float speedX = 1.0f;
-    float speedY = 1.0f;
-    Shader shader;
+    Square ball;
+    Square leftPaddle;
+    Square rightPaddle;
 };
 #endif

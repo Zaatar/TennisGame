@@ -1,15 +1,24 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 
+#include <SDL.h>
+#include <iostream>
 #include <GL/glew.h>
+
+#include "Shader.h"
+
+using std::string;
 
 class Square
 {
 public:
     Square() = default;
     ~Square() = default;
-    float updateTranslationX();
-    float updateTranslationY();
+
+    void load();
+    void ballMovement(float dt);
+    void render();
+
     float getSpeedX() { return speedX; }
     void setSpeedX(float sP) { speedX = sP; }
     float getSpeedY() { return speedY; }
@@ -18,26 +27,39 @@ public:
     float getLastPositionY() { return lastPositionY; }
 
 private:
-    float speedX = 1.0f;
-    float speedY = 1.0f;
+    GLuint vao;
+    GLuint vbo;
+    Shader shader;
+    GLuint ballVao;
+    GLuint ballVbo;
+    GLuint lpaddleVao;
+    GLuint lpaddleVbo;
+    GLuint rpaddleVao;
+    GLuint rpaddleVbo;
+    float radius = 0.125;
     float lastPositionX = 0.5f;
     float lastPositionY = 0.5f;
-    GLfloat points[16] = {
+    float speedX = 1.0f;
+    float speedY = 1.0f;
+    float points[16] = {
         -0.5, -0.5f, 0.0f,
         -0.5f, 0.5f, 0.0f,
         0.5f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f};
-    GLfloat ballScaleMatrix[16] = {
+
+    float quarterScaleMatrix[16] = {
         0.25f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.25f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.25f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat translationMatrix[16] = {
+
+    float translationMatrix[16] = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat paddleScaleMatrix[16] = {
+
+    float paddleScaleMatrix[16] = {
         0.1f, 0.0f, 0.0f, 0.0f,
         0.0f, 0.6f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f, 0.0f,
