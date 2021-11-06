@@ -17,7 +17,7 @@ public:
 
     void load();
     void ballMovement(float dt);
-    void drawLeftPaddle();
+    void drawLeftPaddle(float dt, bool moveUp, bool moveDown);
     void render();
 
     float getSpeedX() { return speedX; }

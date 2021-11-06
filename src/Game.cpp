@@ -29,9 +29,25 @@ void Game::handleInputs()
             break;
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
-            {
                 isRunning = false;
-            }
+            if (event.key.keysym.sym == SDLK_w)
+                lMoveUp = true;
+            else
+                lMoveUp = false;
+            if (event.key.keysym.sym == SDLK_s)
+                lMoveDown = true;
+            else
+                lMoveDown = false;
+            break;
+            if (event.key.keysym.sym == SDLK_UP)
+                rMoveUp = true;
+            else
+                rMoveUp = false;
+            break;
+            if (event.key.keysym.sym == SDLK_DOWN)
+                rMoveDown = true;
+            else
+                rMoveDown = false;
             break;
         default:
             break;
@@ -42,7 +58,7 @@ void Game::handleInputs()
 void Game::update(float dt)
 {
     ball.ballMovement(dt);
-    leftPaddle.drawLeftPaddle();
+    leftPaddle.drawLeftPaddle(dt, lMoveUp, lMoveDown);
 }
 
 void Game::render()

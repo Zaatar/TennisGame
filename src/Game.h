@@ -33,5 +33,10 @@ private:
     Square ball;
     Square leftPaddle;
     Square rightPaddle;
+
+    bool lMoveUp = false;
+    bool lMoveDown = false;
+    bool rMoveUp = false;
+    bool rMoveDown = false;
 };
 #endif
