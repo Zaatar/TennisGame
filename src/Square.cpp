@@ -28,6 +28,10 @@ void Square::initRightPaddle()
     }
 }
 
+void Square::resetBall()
+{
+}
+
 void Square::load()
 {
     glGenVertexArrays(1, &vao);
@@ -44,13 +48,43 @@ void Square::load()
     shader.createShaderProgram();
 }
 
-void Square::ballMovement(float dt)
+void Square::ballMovement(float dt, float lpaddleYPosition, float rpaddleYPosition)
 {
     float threshold = 1.0 - 0.14;
-    if (abs(lastPositionX) > threshold)
+    if (lastPositionX < -threshold)
     {
+        if (lastPositionY > lpaddleYPosition + 0.31)
+        {
+            lastPositionX = 0.0f;
+            lastPositionY = 0.0f;
+            //Score for right paddle
+        }
+        else if (lastPositionY < lpaddleYPosition - 0.31)
+        {
+            lastPositionX = 0.0f;
+            lastPositionY = 0.0f;
+            //Score for right paddle
+        }
         speedX = -speedX;
     }
+
+    if (lastPositionX > threshold)
+    {
+        if (lastPositionY > rpaddleYPosition + 0.31)
+        {
+            lastPositionX = 0.0f;
+            lastPositionY = 0.0f;
+            //Score for left paddle
+        }
+        else if (lastPositionY < rpaddleYPosition - 0.31)
+        {
+            lastPositionX = 0.0f;
+            lastPositionY = 0.0f;
+            //Score for left paddle
+        }
+        speedX = -speedX;
+    }
+
     if (abs(lastPositionY) > threshold)
     {
         speedY = -speedY;

@@ -20,8 +20,9 @@ public:
     void initRightPaddle();
 
     void load();
-    void ballMovement(float dt);
+    void ballMovement(float dt, float lpaddleYPosition, float rpaddleYPosition);
     void paddleMovement(float dt, bool moveUp, bool moveDown);
+    void resetBall();
     void render();
 
     float getSpeedX() { return speedX; }

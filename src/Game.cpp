@@ -9,16 +9,16 @@ void Game::init(int screenWidthP, int screenHeightP)
     windowWidth = screenWidthP;
     windowHeight = screenHeightP;
     isRunning = true;
-    ball.initBall();
     leftPaddle.initLeftPaddle();
     rightPaddle.initRightPaddle();
+    ball.initBall();
 }
 
 void Game::load()
 {
-    ball.load();
     leftPaddle.load();
     rightPaddle.load();
+    ball.load();
 }
 
 void Game::handleInputs()
@@ -63,9 +63,9 @@ void Game::handleInputs()
 
 void Game::update(float dt)
 {
-    ball.ballMovement(dt);
     leftPaddle.paddleMovement(dt, lMoveUp, lMoveDown);
     rightPaddle.paddleMovement(dt, rMoveUp, rMoveDown);
+    ball.ballMovement(dt, leftPaddle.getLastPositionY(), rightPaddle.getLastPositionY());
 }
 
 void Game::render()
