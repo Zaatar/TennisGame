@@ -1,5 +1,33 @@
 #include "Square.h"
 
+void Square::initBall()
+{
+    for (int i = 0; i < 16; ++i)
+    {
+        scaleMatrix[i] = quarterScaleMatrix[i];
+    }
+}
+
+void Square::initLeftPaddle()
+{
+    translationMatrix[12] = -0.95f;
+    lastPositionY = 0.0f;
+    for (int i = 0; i < 16; ++i)
+    {
+        scaleMatrix[i] = paddleScaleMatrix[i];
+    }
+}
+
+void Square::initRightPaddle()
+{
+    translationMatrix[12] = 0.95f;
+    lastPositionY = 0.0f;
+    for (int i = 0; i < 16; ++i)
+    {
+        scaleMatrix[i] = paddleScaleMatrix[i];
+    }
+}
+
 void Square::load()
 {
     glGenVertexArrays(1, &vao);
@@ -18,11 +46,12 @@ void Square::load()
 
 void Square::ballMovement(float dt)
 {
-    if (abs(lastPositionX) > 1.0 - 0.14)
+    float threshold = 1.0 - 0.14;
+    if (abs(lastPositionX) > threshold)
     {
         speedX = -speedX;
     }
-    if (abs(lastPositionY) > 1.0 - 0.14)
+    if (abs(lastPositionY) > threshold)
     {
         speedY = -speedY;
     }
@@ -33,13 +62,12 @@ void Square::ballMovement(float dt)
     lastPositionY = translationMatrix[13];
 }
 
-void Square::drawLeftPaddle(float dt, bool moveUp, bool moveDown)
+void Square::paddleMovement(float dt, bool moveUp, bool moveDown)
 {
-    translationMatrix[12] = -0.95f;
-
+    float threshold = 1.0 - 0.3;
     if (moveUp == true)
     {
-        if (lastPositionY > 1.0 - 0.1)
+        if (lastPositionY > threshold)
         {
             speedY = 0;
         }
@@ -50,7 +78,7 @@ void Square::drawLeftPaddle(float dt, bool moveUp, bool moveDown)
 
     if (moveDown == true)
     {
-        if (lastPositionY < -1.0 + 0.1)
+        if (lastPositionY < -threshold)
         {
             speedY = 0;
         }
@@ -65,7 +93,7 @@ void Square::render()
     shader.use();
     int scaleMatrixLocation = glGetUniformLocation(shader.programId, "scaleMatrix");
     int translationMatrixLocation = glGetUniformLocation(shader.programId, "translationMatrix");
-    glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, quarterScaleMatrix);
+    glUniformMatrix4fv(scaleMatrixLocation, 1, GL_FALSE, scaleMatrix);
     glUniformMatrix4fv(translationMatrixLocation, 1, GL_FALSE, translationMatrix);
     glDrawArrays(GL_POLYGON, 0, 4);
 }

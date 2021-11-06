@@ -9,12 +9,16 @@ void Game::init(int screenWidthP, int screenHeightP)
     windowWidth = screenWidthP;
     windowHeight = screenHeightP;
     isRunning = true;
+    ball.initBall();
+    leftPaddle.initLeftPaddle();
+    rightPaddle.initRightPaddle();
 }
 
 void Game::load()
 {
     ball.load();
     leftPaddle.load();
+    rightPaddle.load();
 }
 
 void Game::handleInputs()
@@ -31,23 +35,25 @@ void Game::handleInputs()
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 isRunning = false;
             if (event.key.keysym.sym == SDLK_w)
+            {
                 lMoveUp = true;
-            else
-                lMoveUp = false;
-            if (event.key.keysym.sym == SDLK_s)
-                lMoveDown = true;
-            else
                 lMoveDown = false;
-            break;
+            }
+            if (event.key.keysym.sym == SDLK_s)
+            {
+                lMoveDown = true;
+                lMoveUp = false;
+            }
             if (event.key.keysym.sym == SDLK_UP)
+            {
                 rMoveUp = true;
-            else
-                rMoveUp = false;
-            break;
-            if (event.key.keysym.sym == SDLK_DOWN)
-                rMoveDown = true;
-            else
                 rMoveDown = false;
+            }
+            if (event.key.keysym.sym == SDLK_DOWN)
+            {
+                rMoveDown = true;
+                rMoveUp = false;
+            }
             break;
         default:
             break;
@@ -58,13 +64,15 @@ void Game::handleInputs()
 void Game::update(float dt)
 {
     ball.ballMovement(dt);
-    leftPaddle.drawLeftPaddle(dt, lMoveUp, lMoveDown);
+    leftPaddle.paddleMovement(dt, lMoveUp, lMoveDown);
+    rightPaddle.paddleMovement(dt, rMoveUp, rMoveDown);
 }
 
 void Game::render()
 {
     ball.render();
     leftPaddle.render();
+    rightPaddle.render();
 }
 
 void Game::clean()

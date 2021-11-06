@@ -15,9 +15,13 @@ public:
     Square() = default;
     ~Square() = default;
 
+    void initBall();
+    void initLeftPaddle();
+    void initRightPaddle();
+
     void load();
     void ballMovement(float dt);
-    void drawLeftPaddle(float dt, bool moveUp, bool moveDown);
+    void paddleMovement(float dt, bool moveUp, bool moveDown);
     void render();
 
     float getSpeedX() { return speedX; }
@@ -35,6 +39,8 @@ private:
     float lastPositionY = 0.5f;
     float speedX = 1.0f;
     float speedY = 1.0f;
+
+    float scaleMatrix[16] = {};
 
     float points[16] = {
         -0.5, -0.5f, 0.0f,
