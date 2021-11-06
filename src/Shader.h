@@ -21,9 +21,6 @@ private:
     GLuint vs;
     GLuint fs;
 
-    Shader(const Shader &) = delete;
-    Shader &operator=(const Shader &) = delete;
-
     const char *vertexShader =
         "#version 430\n"
         "in vec3 vertexPosition;"

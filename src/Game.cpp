@@ -14,6 +14,7 @@ void Game::init(int screenWidthP, int screenHeightP)
 void Game::load()
 {
     ball.load();
+    leftPaddle.load();
 }
 
 void Game::handleInputs()
@@ -41,11 +42,13 @@ void Game::handleInputs()
 void Game::update(float dt)
 {
     ball.ballMovement(dt);
+    leftPaddle.drawLeftPaddle();
 }
 
 void Game::render()
 {
-    glDrawArrays(GL_POLYGON, 0, 4);
+    ball.render();
+    leftPaddle.render();
 }
 
 void Game::clean()

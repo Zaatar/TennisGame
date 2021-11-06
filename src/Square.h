@@ -17,6 +17,7 @@ public:
 
     void load();
     void ballMovement(float dt);
+    void drawLeftPaddle();
     void render();
 
     float getSpeedX() { return speedX; }
@@ -30,17 +31,11 @@ private:
     GLuint vao;
     GLuint vbo;
     Shader shader;
-    GLuint ballVao;
-    GLuint ballVbo;
-    GLuint lpaddleVao;
-    GLuint lpaddleVbo;
-    GLuint rpaddleVao;
-    GLuint rpaddleVbo;
-    float radius = 0.125;
     float lastPositionX = 0.5f;
     float lastPositionY = 0.5f;
     float speedX = 1.0f;
     float speedY = 1.0f;
+
     float points[16] = {
         -0.5, -0.5f, 0.0f,
         -0.5f, 0.5f, 0.0f,
