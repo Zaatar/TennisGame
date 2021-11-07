@@ -21,14 +21,25 @@ bool Window::init(int xPos, int yPos, int width, int height, bool isFullScreen)
         return 1;
     }
 
+    if (TTF_Init() == -1)
+    {
+        cout << "SDL_TTF failed to initialize" << endl;
+        return 1;
+    }
+
     //Initialize window and openGL
     window = SDL_CreateWindow("Tennis Game", xPos, yPos, width, height, flags);
-    cout << "SDL window created!" << endl;
     context = SDL_GL_CreateContext(window);
-    cout << "SDL Context created!" << endl;
     glewExperimental = GL_TRUE;
     glewInit();
-    cout << "Glew Initialized" << endl;
+
+    //Initialize font
+    font = TTF_OpenFont("../build/assets/Carlito-Regular.ttf", 28);
+    if (font == NULL)
+    {
+        cout << "Font not set properly" << endl;
+        return -1;
+    }
 
     //Tell GL to only draw onto a pixel if the shape is closer to the viewer
     glEnable(GL_DEPTH_TEST); //enable depth testing
@@ -38,6 +49,33 @@ bool Window::init(int xPos, int yPos, int width, int height, bool isFullScreen)
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     return true;
+}
+
+void Window::renderText()
+{
+    message = TTF_RenderText_Solid(font, "Test Test Test", textColor);
+    int format = 0;
+    Uint8 colors = message->format->BytesPerPixel;
+    if (colors == 4)
+    { // alpha
+        if (message->format->Rmask == 0x000000ff)
+            format = GL_RGBA;
+        else
+            format = GL_BGRA;
+    }
+    else
+    { // no alpha
+        if (message->format->Rmask == 0x000000ff)
+            format = GL_RGB;
+        else
+            format = GL_BGR;
+    }
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, message->w, message->h, 0, format, GL_UNSIGNED_BYTE, message->pixels);
+    SDL_FreeSurface(message);
+    TTF_CloseFont(font);
+    TTF_Quit();
 }
 
 void Window::clearScreen()

@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceRoot}/external/SDL2-2.0.12/include",
                 "${workspaceRoot}/external/SDL2_image-2.0.5/include",
-                "${workspaceRoot}/external/glew-2.1.0/include"
+                "${workspaceRoot}/external/glew-2.1.0/include",
+                "${workspaceRoot}/external/SDL2_ttf-2.0.15/include"
             ],
             "defines": [
                 "_DEBUG",
