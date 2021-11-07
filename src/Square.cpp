@@ -65,6 +65,16 @@ void Square::ballMovement(float dt, float lpaddleYPosition, float rpaddleYPositi
             lastPositionY = 0.0f;
             //Score for right paddle
         }
+        else if (lastPositionY < lpaddleYPosition + 0.12 || lastPositionY > lpaddleYPosition - 0.12)
+        {
+            speedX = -speedX;
+            translationMatrix[13] = 0.0f;
+            lastPositionY = translationMatrix[13];
+        }
+        else if (lastPositionY < lpaddleYPosition + 0.3 && lastPositionY > lpaddleYPosition + 0.13)
+        {
+            speedX = -speedX * 1.5;
+        }
         speedX = -speedX;
     }
 
