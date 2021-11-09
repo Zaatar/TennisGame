@@ -20,14 +20,14 @@ void Ball::movement(float dt, float lpaddleYPosition, float rpaddleYPosition)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
-            //Score for right paddle
+            rpaddleScored = true;
         }
         // Ball hits below left paddle
         else if (lastPositionY < lpaddleYPosition - 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
-            //Score for right paddle
+            rpaddleScored = true;
         }
         // Ball hits middle of the left paddle
         else if (lastPositionY > lpaddleYPosition - 0.10 && lastPositionY < lpaddleYPosition + 0.10)
@@ -67,14 +67,14 @@ void Ball::movement(float dt, float lpaddleYPosition, float rpaddleYPosition)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
-            //Score for left paddle
+            lpaddleScored = true;
         }
         // Ball hits below right paddle
         else if (lastPositionY < rpaddleYPosition - 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
-            //Score for left paddle
+            lpaddleScored = true;
         }
         // Ball hits middle of the right paddle
         else if (lastPositionY > rpaddleYPosition - 0.10 && lastPositionY < rpaddleYPosition + 0.10)

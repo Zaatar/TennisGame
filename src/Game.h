@@ -20,6 +20,7 @@ public:
     void update(float dt);
     void render();
     void clean();
+    void updateScore();
 
     bool getIsRunning() { return isRunning; }
     void setIsRunning(bool irP) { isRunning = irP; }
