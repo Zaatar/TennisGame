@@ -24,6 +24,7 @@ public:
     void paddleMovement(float dt, bool moveUp, bool moveDown);
     void resetBall();
     void render();
+    void clampSpeed(float speed);
 
     float getSpeedX() { return speedX; }
     void setSpeedX(float sP) { speedX = sP; }

@@ -48,51 +48,159 @@ void Square::load()
     shader.createShaderProgram();
 }
 
+void Square::clampSpeed(float speed)
+{
+    if (speed > 1.5)
+    {
+        speed = 1.5;
+    }
+    if (speed < -1.5)
+    {
+        speed = -1.5;
+    }
+}
+
 void Square::ballMovement(float dt, float lpaddleYPosition, float rpaddleYPosition)
 {
     float threshold = 1.0 - 0.14;
+    int origspeedY = speedY;
+    int origspeedX = speedX;
     if (lastPositionX < -threshold)
     {
+        //Ball hits above left paddle
         if (lastPositionY > lpaddleYPosition + 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
             //Score for right paddle
         }
+        // Ball hits below left paddle
         else if (lastPositionY < lpaddleYPosition - 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
             //Score for right paddle
         }
-        else if (lastPositionY < lpaddleYPosition + 0.12 || lastPositionY > lpaddleYPosition - 0.12)
+        // Ball hits middle of the left paddle
+        else if (lastPositionY > lpaddleYPosition - 0.10 && lastPositionY < lpaddleYPosition + 0.10)
         {
+            if (speedX == 1.25)
+            {
+                speedX = origspeedX;
+            }
+            if (speedX == -1.25)
+            {
+                speedX = -origspeedX;
+            }
             speedX = -speedX;
-            translationMatrix[13] = 0.0f;
-            lastPositionY = translationMatrix[13];
+            speedY = 0;
         }
-        else if (lastPositionY < lpaddleYPosition + 0.3 && lastPositionY > lpaddleYPosition + 0.13)
+        //Ball hits the upper section of the left paddle
+        else if (lastPositionY > lpaddleYPosition + 0.11 && lastPositionY < lpaddleYPosition + 0.3)
         {
-            speedX = -speedX * 1.5;
+            speedX = -speedX * 1.25;
+            if (speedY == 0)
+            {
+                speedY = 1.25;
+            }
+            else
+            {
+                speedY = -speedY;
+            }
+            //The below line will be overwritten below, need to think of how to add this functionality.
+            translationMatrix[13] = 0.75f;
         }
-        speedX = -speedX;
+        //Ball hits the lower section of the left paddle
+        else if (lastPositionY < lpaddleYPosition - 0.11 && lastPositionY > lpaddleYPosition - 0.3)
+        {
+            speedX = -speedX * 1.25;
+            if (speedY == 0)
+            {
+                speedY = 1.25;
+            }
+            else
+            {
+                speedY = -speedY;
+            }
+            translationMatrix[13] = -0.75f;
+        }
     }
 
     if (lastPositionX > threshold)
     {
+        //Ball hits above right paddle
         if (lastPositionY > rpaddleYPosition + 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
             //Score for left paddle
         }
+        // Ball hits below right paddle
         else if (lastPositionY < rpaddleYPosition - 0.31)
         {
             lastPositionX = 0.0f;
             lastPositionY = 0.0f;
             //Score for left paddle
         }
-        speedX = -speedX;
+        // Ball hits middle of the right paddle
+        else if (lastPositionY > rpaddleYPosition - 0.10 && lastPositionY < rpaddleYPosition + 0.10)
+        {
+            if (speedX == 1.25)
+            {
+                speedX = origspeedX;
+            }
+            if (speedX == -1.25)
+            {
+                speedX = -origspeedX;
+            }
+            speedX = -speedX;
+            speedY = 0;
+        }
+        //Ball hits the upper section of the right paddle
+        else if (lastPositionY > rpaddleYPosition + 0.11 && lastPositionY < rpaddleYPosition + 0.3)
+        {
+            speedX = -speedX * 1.25;
+            if (speedY == 0)
+            {
+                speedY = 1.25;
+            }
+            else
+            {
+                speedY = -speedY;
+            }
+            translationMatrix[13] = 0.75f;
+        }
+        //Ball hits the lower section of the right paddle
+        else if (lastPositionY < rpaddleYPosition - 0.11 && lastPositionY > rpaddleYPosition - 0.3)
+        {
+            speedX = -speedX * 1.25;
+            if (speedY == 0)
+            {
+                speedY = 1.25;
+            }
+            else
+            {
+                speedY = -speedY;
+            }
+            translationMatrix[13] = -0.75f;
+        }
+    }
+
+    if (speedX > 1.5)
+    {
+        speedX = 1.5;
+    }
+    if (speedX < -1.5)
+    {
+        speedX = -1.5;
+    }
+    if (speedY > 1.5)
+    {
+        speedY = 1.5;
+    }
+    if (speedY < -1.5)
+    {
+        speedY = -1.5;
     }
 
     if (abs(lastPositionY) > threshold)
