@@ -9,9 +9,9 @@ void Game::init(int screenWidthP, int screenHeightP)
     windowWidth = screenWidthP;
     windowHeight = screenHeightP;
     isRunning = true;
-    leftPaddle.initLeftPaddle();
-    rightPaddle.initRightPaddle();
-    ball.initBall();
+    leftPaddle.init("left");
+    rightPaddle.init("right");
+    ball.init();
 }
 
 void Game::load()
@@ -63,9 +63,26 @@ void Game::handleInputs()
 
 void Game::update(float dt)
 {
-    leftPaddle.paddleMovement(dt, lMoveUp, lMoveDown);
-    rightPaddle.paddleMovement(dt, rMoveUp, rMoveDown);
-    ball.ballMovement(dt, leftPaddle.getLastPositionY(), rightPaddle.getLastPositionY());
+    leftPaddle.movement(dt, lMoveUp, lMoveDown);
+    rightPaddle.movement(dt, rMoveUp, rMoveDown);
+    ball.movement(dt, leftPaddle.getLastPositionY(), rightPaddle.getLastPositionY());
+    updateScore();
+}
+
+void Game::updateScore()
+{
+    if (ball.getLPaddleScored())
+    {
+        leftPaddle.incrementScore();
+        ball.setLPaddleScored(false);
+        cout << "Left paddle scored, its' score now is " << leftPaddle.getScore() << endl;
+    }
+    if (ball.getRPaddleScored())
+    {
+        rightPaddle.incrementScore();
+        ball.setRPaddleScored(false);
+        cout << "Right paddle scored, its' score now is " << rightPaddle.getScore() << endl;
+    }
 }
 
 void Game::render()
