@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include "Shader.h"
 #include "Square.h"
+#include "Ball.h"
+#include "Paddle.h"
 
 class Game
 {
@@ -18,6 +20,7 @@ public:
     void update(float dt);
     void render();
     void clean();
+    void updateScore();
 
     bool getIsRunning() { return isRunning; }
     void setIsRunning(bool irP) { isRunning = irP; }
@@ -30,9 +33,9 @@ private:
     bool isRunning;
     int windowWidth, windowHeight;
 
-    Square ball;
-    Square leftPaddle;
-    Square rightPaddle;
+    Ball ball;
+    Paddle leftPaddle;
+    Paddle rightPaddle;
 
     bool lMoveUp = false;
     bool lMoveDown = false;

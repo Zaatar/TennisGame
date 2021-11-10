@@ -1,37 +1,5 @@
 #include "Square.h"
 
-void Square::initBall()
-{
-    for (int i = 0; i < 16; ++i)
-    {
-        scaleMatrix[i] = quarterScaleMatrix[i];
-    }
-}
-
-void Square::initLeftPaddle()
-{
-    translationMatrix[12] = -0.95f;
-    lastPositionY = 0.0f;
-    for (int i = 0; i < 16; ++i)
-    {
-        scaleMatrix[i] = paddleScaleMatrix[i];
-    }
-}
-
-void Square::initRightPaddle()
-{
-    translationMatrix[12] = 0.95f;
-    lastPositionY = 0.0f;
-    for (int i = 0; i < 16; ++i)
-    {
-        scaleMatrix[i] = paddleScaleMatrix[i];
-    }
-}
-
-void Square::resetBall()
-{
-}
-
 void Square::load()
 {
     glGenVertexArrays(1, &vao);
@@ -46,80 +14,6 @@ void Square::load()
     shader.compileVertexShader();
     shader.compileFragmentShader();
     shader.createShaderProgram();
-}
-
-void Square::ballMovement(float dt, float lpaddleYPosition, float rpaddleYPosition)
-{
-    float threshold = 1.0 - 0.14;
-    if (lastPositionX < -threshold)
-    {
-        if (lastPositionY > lpaddleYPosition + 0.31)
-        {
-            lastPositionX = 0.0f;
-            lastPositionY = 0.0f;
-            //Score for right paddle
-        }
-        else if (lastPositionY < lpaddleYPosition - 0.31)
-        {
-            lastPositionX = 0.0f;
-            lastPositionY = 0.0f;
-            //Score for right paddle
-        }
-        speedX = -speedX;
-    }
-
-    if (lastPositionX > threshold)
-    {
-        if (lastPositionY > rpaddleYPosition + 0.31)
-        {
-            lastPositionX = 0.0f;
-            lastPositionY = 0.0f;
-            //Score for left paddle
-        }
-        else if (lastPositionY < rpaddleYPosition - 0.31)
-        {
-            lastPositionX = 0.0f;
-            lastPositionY = 0.0f;
-            //Score for left paddle
-        }
-        speedX = -speedX;
-    }
-
-    if (abs(lastPositionY) > threshold)
-    {
-        speedY = -speedY;
-    }
-
-    translationMatrix[12] = speedX * dt + lastPositionX;
-    lastPositionX = translationMatrix[12];
-    translationMatrix[13] = speedY * dt + lastPositionY;
-    lastPositionY = translationMatrix[13];
-}
-
-void Square::paddleMovement(float dt, bool moveUp, bool moveDown)
-{
-    float threshold = 1.0 - 0.3;
-    if (moveUp == true)
-    {
-        if (lastPositionY > threshold)
-        {
-            speedY = 0;
-        }
-        translationMatrix[13] = speedY * dt + lastPositionY;
-        lastPositionY = translationMatrix[13];
-        speedY = 1;
-    }
-
-    if (moveDown == true)
-    {
-        if (lastPositionY < -threshold)
-        {
-            speedY = 0;
-        }
-        translationMatrix[13] = -speedY * dt + lastPositionY;
-        lastPositionY = translationMatrix[13];
-        speedY = 1;
-    }
 }
 
 void Square::render()

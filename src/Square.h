@@ -15,14 +15,9 @@ public:
     Square() = default;
     ~Square() = default;
 
-    void initBall();
-    void initLeftPaddle();
-    void initRightPaddle();
+    void init();
 
     void load();
-    void ballMovement(float dt, float lpaddleYPosition, float rpaddleYPosition);
-    void paddleMovement(float dt, bool moveUp, bool moveDown);
-    void resetBall();
     void render();
 
     float getSpeedX() { return speedX; }
@@ -32,7 +27,7 @@ public:
     float getLastPositionX() { return lastPositionX; }
     float getLastPositionY() { return lastPositionY; }
 
-private:
+protected:
     GLuint vao;
     GLuint vbo;
     Shader shader;
