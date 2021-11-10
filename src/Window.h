@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <GL/glew.h>
+#include <math.h>
 
 class Window
 {
@@ -18,6 +19,8 @@ public:
     void clean();
 
     void renderText();
+    int round(double x);
+    int nextpoweroftwo(int x);
 
 private:
     SDL_Window *window;
