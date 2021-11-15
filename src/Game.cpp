@@ -4,13 +4,14 @@ Game::Game() : isRunning(false), windowWidth(0), windowHeight(0) {}
 
 Game::~Game() {}
 
-void Game::init(int screenWidthP, int screenHeightP)
+void Game::init(int screenWidthP, int screenHeightP, bool aiControlledPaddle)
 {
     windowWidth = screenWidthP;
     windowHeight = screenHeightP;
     isRunning = true;
     leftPaddle.init("left");
     rightPaddle.init("right");
+    rightPaddle.setAiControlled(aiControlledPaddle);
     ball.init();
 }
 
@@ -62,7 +63,7 @@ void Game::handleInputs()
             {
                 if (event.key.keysym.sym == SDLK_SPACE)
                 {
-                    isRunning = true;
+                    isInit = true;
                     isGameOver = false;
                 }
             }
@@ -74,8 +75,8 @@ void Game::handleInputs()
 
 void Game::update(float dt)
 {
-    leftPaddle.movement(dt, lMoveUp, lMoveDown);
-    rightPaddle.movement(dt, rMoveUp, rMoveDown);
+    leftPaddle.movement(dt, lMoveUp, lMoveDown, ball);
+    rightPaddle.movement(dt, rMoveUp, rMoveDown, ball);
     ball.movement(dt, leftPaddle.getLastPositionY(), rightPaddle.getLastPositionY());
     updateScore();
 }
@@ -86,6 +87,7 @@ void Game::updateScore()
     {
         leftPaddle.incrementScore();
         ball.setLPaddleScored(false);
+        cout << "Left paddle scored, its' score now is " << leftPaddle.getScore() << endl;
         if (leftPaddle.getScore() >= 8)
         {
             isRunning = false;
@@ -95,12 +97,12 @@ void Game::updateScore()
             leftPaddle.resetScore();
             rightPaddle.resetScore();
         }
-        cout << "Left paddle scored, its' score now is " << leftPaddle.getScore() << endl;
     }
     if (ball.getRPaddleScored())
     {
         rightPaddle.incrementScore();
         ball.setRPaddleScored(false);
+        cout << "Right paddle scored, its' score now is " << rightPaddle.getScore() << endl;
         if (rightPaddle.getScore() >= 8)
         {
             isRunning = false;
@@ -110,7 +112,6 @@ void Game::updateScore()
             leftPaddle.resetScore();
             rightPaddle.resetScore();
         }
-        cout << "Right paddle scored, its' score now is " << rightPaddle.getScore() << endl;
     }
 }
 
