@@ -20,28 +20,64 @@ void Paddle::init(string orientation)
         scaleMatrix[i] = paddleScaleMatrix[i];
     }
 }
-void Paddle::movement(float dt, bool moveUp, bool moveDown)
+
+void Paddle::moveUpwards(float dt, float threshold)
 {
-    float threshold = 1.0 - 0.3;
+
+    if (lastPositionY > threshold)
+    {
+        speedY = 0;
+    }
+    translationMatrix[13] = speedY * dt + lastPositionY;
+    lastPositionY = translationMatrix[13];
+    speedY = 1;
+}
+
+void Paddle::moveDownwards(float dt, float threshold)
+{
+    if (lastPositionY < -threshold)
+    {
+        speedY = 0;
+    }
+    translationMatrix[13] = -speedY * dt + lastPositionY;
+    lastPositionY = translationMatrix[13];
+    speedY = 1;
+}
+
+void Paddle::aiMovement(float dt, float threshold, Square ball)
+{
+    if (ball.getLastPositionY() > lastPositionY)
+    {
+        moveUpwards(dt, threshold);
+    }
+    else if (ball.getLastPositionY() < lastPositionY)
+    {
+        moveDownwards(dt, threshold);
+    }
+}
+
+void Paddle::playerMovement(float dt, float threshold, bool moveUp, bool moveDown)
+{
     if (moveUp == true)
     {
-        if (lastPositionY > threshold)
-        {
-            speedY = 0;
-        }
-        translationMatrix[13] = speedY * dt + lastPositionY;
-        lastPositionY = translationMatrix[13];
-        speedY = 1;
+        moveUpwards(dt, threshold);
     }
 
     if (moveDown == true)
     {
-        if (lastPositionY < -threshold)
-        {
-            speedY = 0;
-        }
-        translationMatrix[13] = -speedY * dt + lastPositionY;
-        lastPositionY = translationMatrix[13];
-        speedY = 1;
+        moveDownwards(dt, threshold);
+    }
+}
+
+void Paddle::movement(float dt, bool moveUp, bool moveDown, Square ball)
+{
+    float threshold = 1.0 - 0.3;
+    if (aiControlled)
+    {
+        aiMovement(dt, threshold, ball);
+    }
+    else
+    {
+        playerMovement(dt, threshold, moveUp, moveDown);
     }
 }

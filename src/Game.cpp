@@ -4,13 +4,14 @@ Game::Game() : isRunning(false), windowWidth(0), windowHeight(0) {}
 
 Game::~Game() {}
 
-void Game::init(int screenWidthP, int screenHeightP)
+void Game::init(int screenWidthP, int screenHeightP, bool aiControlledPaddle)
 {
     windowWidth = screenWidthP;
     windowHeight = screenHeightP;
     isRunning = true;
     leftPaddle.init("left");
     rightPaddle.init("right");
+    rightPaddle.setAiControlled(aiControlledPaddle);
     ball.init();
 }
 
@@ -34,27 +35,38 @@ void Game::handleInputs()
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 isRunning = false;
-            if (event.key.keysym.sym == SDLK_w)
+            if (isRunning)
             {
-                lMoveUp = true;
-                lMoveDown = false;
+                if (event.key.keysym.sym == SDLK_w)
+                {
+                    lMoveUp = true;
+                    lMoveDown = false;
+                }
+                if (event.key.keysym.sym == SDLK_s)
+                {
+                    lMoveDown = true;
+                    lMoveUp = false;
+                }
+                if (event.key.keysym.sym == SDLK_UP)
+                {
+                    rMoveUp = true;
+                    rMoveDown = false;
+                }
+                if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    rMoveDown = true;
+                    rMoveUp = false;
+                }
+                break;
             }
-            if (event.key.keysym.sym == SDLK_s)
+            if (isGameOver)
             {
-                lMoveDown = true;
-                lMoveUp = false;
+                if (event.key.keysym.sym == SDLK_SPACE)
+                {
+                    isInit = true;
+                    isGameOver = false;
+                }
             }
-            if (event.key.keysym.sym == SDLK_UP)
-            {
-                rMoveUp = true;
-                rMoveDown = false;
-            }
-            if (event.key.keysym.sym == SDLK_DOWN)
-            {
-                rMoveDown = true;
-                rMoveUp = false;
-            }
-            break;
         default:
             break;
         }
@@ -63,8 +75,8 @@ void Game::handleInputs()
 
 void Game::update(float dt)
 {
-    leftPaddle.movement(dt, lMoveUp, lMoveDown);
-    rightPaddle.movement(dt, rMoveUp, rMoveDown);
+    leftPaddle.movement(dt, lMoveUp, lMoveDown, ball);
+    rightPaddle.movement(dt, rMoveUp, rMoveDown, ball);
     ball.movement(dt, leftPaddle.getLastPositionY(), rightPaddle.getLastPositionY());
     updateScore();
 }
@@ -76,12 +88,30 @@ void Game::updateScore()
         leftPaddle.incrementScore();
         ball.setLPaddleScored(false);
         cout << "Left paddle scored, its' score now is " << leftPaddle.getScore() << endl;
+        if (leftPaddle.getScore() >= 8)
+        {
+            isRunning = false;
+            isGameOver = true;
+            winner = "Left Player";
+            //Reset scores for second playthrough
+            leftPaddle.resetScore();
+            rightPaddle.resetScore();
+        }
     }
     if (ball.getRPaddleScored())
     {
         rightPaddle.incrementScore();
         ball.setRPaddleScored(false);
         cout << "Right paddle scored, its' score now is " << rightPaddle.getScore() << endl;
+        if (rightPaddle.getScore() >= 8)
+        {
+            isRunning = false;
+            isGameOver = true;
+            winner = "Right Player";
+            //Reset scores for second playthrough
+            leftPaddle.resetScore();
+            rightPaddle.resetScore();
+        }
     }
 }
 
