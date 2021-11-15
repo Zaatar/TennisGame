@@ -4,9 +4,9 @@
 #include <GL/GLU.h>
 #include <string>
 
-#include "Timer.h"
-#include "Window.h"
-#include "Game.h"
+#include "./engine/Timer.h"
+#include "./engine/Window.h"
+#include "./engine/Game.h"
 
 using std::cin;
 using std::cout;

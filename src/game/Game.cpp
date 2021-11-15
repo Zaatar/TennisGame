@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "../engine/Game.h"
 
 Game::Game() : isRunning(false), windowWidth(0), windowHeight(0) {}
 
