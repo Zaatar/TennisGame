@@ -22,6 +22,5 @@ private:
     const std::string &title;
 
     Window() = delete;
-    Window(const Window &) = delete;
 };
 #endif

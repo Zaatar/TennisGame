@@ -34,27 +34,38 @@ void Game::handleInputs()
         case SDL_KEYDOWN:
             if (event.key.keysym.sym == SDLK_ESCAPE)
                 isRunning = false;
-            if (event.key.keysym.sym == SDLK_w)
+            if (isRunning)
             {
-                lMoveUp = true;
-                lMoveDown = false;
+                if (event.key.keysym.sym == SDLK_w)
+                {
+                    lMoveUp = true;
+                    lMoveDown = false;
+                }
+                if (event.key.keysym.sym == SDLK_s)
+                {
+                    lMoveDown = true;
+                    lMoveUp = false;
+                }
+                if (event.key.keysym.sym == SDLK_UP)
+                {
+                    rMoveUp = true;
+                    rMoveDown = false;
+                }
+                if (event.key.keysym.sym == SDLK_DOWN)
+                {
+                    rMoveDown = true;
+                    rMoveUp = false;
+                }
+                break;
             }
-            if (event.key.keysym.sym == SDLK_s)
+            if (isGameOver)
             {
-                lMoveDown = true;
-                lMoveUp = false;
+                if (event.key.keysym.sym == SDLK_SPACE)
+                {
+                    isRunning = true;
+                    isGameOver = false;
+                }
             }
-            if (event.key.keysym.sym == SDLK_UP)
-            {
-                rMoveUp = true;
-                rMoveDown = false;
-            }
-            if (event.key.keysym.sym == SDLK_DOWN)
-            {
-                rMoveDown = true;
-                rMoveUp = false;
-            }
-            break;
         default:
             break;
         }
@@ -75,12 +86,30 @@ void Game::updateScore()
     {
         leftPaddle.incrementScore();
         ball.setLPaddleScored(false);
+        if (leftPaddle.getScore() >= 8)
+        {
+            isRunning = false;
+            isGameOver = true;
+            winner = "Left Player";
+            //Reset scores for second playthrough
+            leftPaddle.resetScore();
+            rightPaddle.resetScore();
+        }
         cout << "Left paddle scored, its' score now is " << leftPaddle.getScore() << endl;
     }
     if (ball.getRPaddleScored())
     {
         rightPaddle.incrementScore();
         ball.setRPaddleScored(false);
+        if (rightPaddle.getScore() >= 8)
+        {
+            isRunning = false;
+            isGameOver = true;
+            winner = "Right Player";
+            //Reset scores for second playthrough
+            leftPaddle.resetScore();
+            rightPaddle.resetScore();
+        }
         cout << "Right paddle scored, its' score now is " << rightPaddle.getScore() << endl;
     }
 }

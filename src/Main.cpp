@@ -13,6 +13,40 @@ using std::endl;
 constexpr int SCREEN_WIDTH = 640;
 constexpr int SCREEN_HEIGHT = 480;
 
+void gameplayLoop(Game game, Window window, Timer timer, float dt)
+{
+    cout << "Welcome lover of Tennis, grab a seat and let's play!" << endl;
+
+    while (game.getIsRunning())
+    {
+        dt = static_cast<float>(timer.computeDeltaTime()) / 1000.0f;
+        game.handleInputs();
+
+        game.update(dt);
+        //Draw
+        window.clearScreen();
+        game.render();
+
+        window.swapBuffer();
+    }
+
+    if (game.getIsGameOver())
+    {
+        cout << "The game is now over" << endl;
+        cout << "The winner of this game is the " << game.getWinner() << " who scored 8 points" << endl;
+        cout << "CONGRATULATIONS!" << endl;
+        cout << "To restart the game press the SPACE button" << endl;
+    }
+
+    while (game.getIsGameOver())
+    {
+        game.handleInputs();
+        window.clearScreen();
+        if (game.getIsRunning())
+            gameplayLoop(game, window, timer, dt);
+    }
+}
+
 int main(int argc = 0, char **argv = nullptr)
 {
     //Handle args
@@ -43,18 +77,7 @@ int main(int argc = 0, char **argv = nullptr)
     game.load();
     float dt;
 
-    while (game.getIsRunning())
-    {
-        dt = static_cast<float>(timer.computeDeltaTime()) / 1000.0f;
-        game.handleInputs();
-
-        game.update(dt);
-        //Draw
-        window.clearScreen();
-        game.render();
-
-        window.swapBuffer();
-    }
+    gameplayLoop(game, window, timer, dt);
 
     //Quit
     window.clean();

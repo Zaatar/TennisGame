@@ -12,6 +12,7 @@ public:
 
     int getScore() { return score; }
     void incrementScore() { ++score; }
+    void resetScore() { score = 0; }
 
 private:
     int score = 0;

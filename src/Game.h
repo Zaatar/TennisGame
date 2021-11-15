@@ -3,10 +3,13 @@
 
 #include <SDL.h>
 #include <GL/glew.h>
-#include "Shader.h"
+#include <string>
+
 #include "Square.h"
 #include "Ball.h"
 #include "Paddle.h"
+
+using std::string;
 
 class Game
 {
@@ -23,15 +26,14 @@ public:
     void updateScore();
 
     bool getIsRunning() { return isRunning; }
-    void setIsRunning(bool irP) { isRunning = irP; }
-    int getWindowWidth() { return windowWidth; }
-    void setWindowWidth(int widthP) { windowWidth = widthP; }
-    int getWindowHeight() { return windowHeight; }
-    void setWindowHeight(int heightP) { windowHeight = heightP; }
+    bool getIsGameOver() { return isGameOver; }
+    string getWinner() { return winner; }
 
 private:
     bool isRunning;
+    bool isGameOver = false;
     int windowWidth, windowHeight;
+    string winner;
 
     Ball ball;
     Paddle leftPaddle;
