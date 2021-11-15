@@ -4,9 +4,9 @@
 #include <SDL.h>
 #include <GL/glew.h>
 #include "Shader.h"
-#include "Square.h"
 #include "Ball.h"
 #include "Paddle.h"
+#include "Text.h"
 
 class Game
 {
@@ -36,6 +36,7 @@ private:
     Ball ball;
     Paddle leftPaddle;
     Paddle rightPaddle;
+    Text text;
 
     bool lMoveUp = false;
     bool lMoveDown = false;

@@ -12,6 +12,7 @@ void Game::init(int screenWidthP, int screenHeightP)
     leftPaddle.init("left");
     rightPaddle.init("right");
     ball.init();
+    text.init();
 }
 
 void Game::load()
@@ -19,6 +20,7 @@ void Game::load()
     leftPaddle.load();
     rightPaddle.load();
     ball.load();
+    text.load();
 }
 
 void Game::handleInputs()
@@ -90,6 +92,7 @@ void Game::render()
     ball.render();
     leftPaddle.render();
     rightPaddle.render();
+    text.render();
 }
 
 void Game::clean()

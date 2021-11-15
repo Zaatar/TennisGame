@@ -52,7 +52,6 @@ int main(int argc = 0, char **argv = nullptr)
         //Draw
         window.clearScreen();
         game.render();
-        window.renderText();
         window.swapBuffer();
     }
 
