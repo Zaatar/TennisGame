@@ -37,7 +37,7 @@ void Game::handleInputs()
                 isRunning = false;
             if (isRunning)
             {
-                if (event.key.keysym.sym == SDLK_w)
+                if (event.key.keysym.sym == SDLK_w || event.key.keysym.sym == SDLK_z)
                 {
                     lMoveUp = true;
                     lMoveDown = false;
